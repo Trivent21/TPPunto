@@ -53,7 +53,7 @@ app.get('/', function(req, res) {
 });
 
 app.listen(port, () => {
-  console.log(`Server is listening on port ${port}...`);
+  console.log(`Server is listening on port http//localhost:${port}...`);
 });
 
 
@@ -62,7 +62,6 @@ from the request body and performs different actions based on the value of the '
 the form data. */
 app.post('/add', (req, res) => {
   const formData = req.body;
-  console.log(req.body)
   whoBdd = formData.database
   // Query Mysql
   if (whoBdd == 'MySQL') {
@@ -131,7 +130,6 @@ form data from the request body and checks the value of the variable `whoBdd` to
 database to use for saving the winner. */
 app.post('/saveWinner', async (req, res) => {
  const formData = req.body;
- console.log(req.body)
   if (whoBdd == 'MySQL') {
     dbmysql.sequelize.sync().then(() => {
       partieMysql.create({
@@ -202,7 +200,7 @@ request body and performs different actions based on the values of the 'database
 fields in the form data. */
 app.post('/transi', async (req, res) => {
   const formData = req.body;
-  console.log(formData)
+  
   var data = ""
   if (formData.database1 == formData.database2) {
     data = "Erreur : Même BDD , impossible"
@@ -235,9 +233,9 @@ async function switchBDDsql(DBB1,DBB2,res) {
   try {
      // Select SQL BDD
     const playersFromDBB1 = await DBB1.sequelize.query("SELECT * FROM players", { type: QueryTypes.SELECT });
-    console.log(playersFromDBB1)
+    
     const partiesFromDBB1 = await DBB1.sequelize.query("SELECT * FROM parties", { type: QueryTypes.SELECT });
-    console.log(partiesFromDBB1)
+    
     // Delete of SQL BDD 
     await DBB2.player.destroy({ where: {} });
     await DBB2.partie.destroy({ where: {} });
@@ -333,6 +331,29 @@ async function switchNoSQLtoSQL(DBB2,res) {
     console.error('Erreur lors de la transition de base de données:', error);
   }
 }
+
+app.post('/delete', async (req, res) => {
+  const formData = req.body;
+  if ('MySQL' == formData.datadel) {
+    await playerMysql.destroy({ where: {} });
+    await partieMysql.destroy({ where: {} });
+    var partiesFromDBB = await dbmysql.sequelize.query("SELECT * FROM parties", { type: QueryTypes.SELECT }); 
+  } else if ('SQLite' == formData.datadel){
+    await playersqlite.destroy({ where: {} });
+    await partieqsqlite.destroy({ where: {} });
+    var partiesFromDBB = await dbsqllite.sequelize.query("SELECT * FROM parties", { type: QueryTypes.SELECT }); 
+  } else if ('Mongodb' == formData.datadel) {
+    await Partie.deleteMany(); 
+    var partiesFromDBB = await Partie.find();
+  }
+  if (partiesFromDBB = []) {
+    var data = "Ok, database " + formData.datadel + " is void now"
+    res.render('resultSwitch', { data });
+  } else {
+    var data = "Error " + partiesFromDBB
+    res.render('resultSwitch', { data });
+  }
+});
 
 // Random Database 
 

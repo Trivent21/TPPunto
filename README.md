@@ -117,6 +117,9 @@ sudo service mongod start
 ```bash
 npm run start
 ```
+#### SQLite
+
+1. Make sure your SQLite is installed.
 
 ## Authors
 

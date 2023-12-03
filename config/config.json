@@ -1,0 +1,20 @@
+{
+  "sqlite": {
+    "dialect": "sqlite",
+    "storage": "development.db"
+  },
+  "mysql": {
+    "username": "mateo",
+    "password": "password",
+    "database": "punto",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "mongo": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mongoDB"
+  }
+}

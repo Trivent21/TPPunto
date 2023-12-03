@@ -1,0 +1,25 @@
+{
+  "name": "Express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "math": "^0.0.3",
+    "mongodb": "6.3",
+    "mongoose": "^8.0.2",
+    "mysql2": "^3.6.3",
+    "path": "^0.12.7",
+    "sequelize": "^6.35.0",
+    "sequelize-cli": "^6.6.2",
+    "sqlite3": "^5.1.6"
+  }
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Resultat : <%= data.result %></h1>
+        
+        <!-- Conteneur pour addinBDD -->
+        
+
+        <!-- Bouton pour revenir à la page index.html -->
+        <a href="/index.html">
+            <button>Revenir à la page d'accueil</button>
+        </a>
+    </div>
+    <div class="addin-container">
+        <% try { %>
+            <!-- Convertir la chaîne JSON en un objet JavaScript -->
+            <% let addinBDD = JSON.parse(data.addinBDD); %>
+
+            <!-- Vérifier si addinBDD est une liste -->
+            <% if (Array.isArray(addinBDD)) { %>
+                <ul>
+                    <!-- Itérer sur la liste d'objets -->
+                    <% addinBDD.forEach(function(item, index) { %>
+                        <li>
+                            <!-- Afficher les propriétés de chaque objet -->
+                            <p><strong>Jeu:</strong></p>
+                            <p>Player 1: <%= item.player1 %></p>
+                            <p>Player 2: <%= item.player2 %></p>
+                            <p>Who Win: <%= item.whowin %></p>
+                            <!-- Ajoutez d'autres propriétés au besoin -->
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else if (addinBDD instanceof Object) { %>
+                <!-- Si addinBDD est un objet unique -->
+                <ul>
+                    <li>
+                        <!-- Afficher les propriétés de l'unique objet -->
+                        <p>Player 1: <%= addinBDD.player1 %></p>
+                        <p>Player 2: <%= addinBDD.player2 %></p>
+                        <p>Who Win: <%= addinBDD.whowin %></p>
+                        <!-- Ajoutez d'autres propriétés au besoin -->
+                    </li>
+                </ul>
+            <% } else { %>
+                <!-- Si addinBDD n'est ni une liste ni un objet -->
+                <p>addinBDD n'est pas une liste ou un objet</p>
+            <% } %>
+
+        <% } catch (error) { %>
+            <!-- Gérer l'erreur si la conversion JSON échoue -->
+            <p>Erreur lors de la conversion de la chaîne JSON</p>
+        <% } %>
+    </div>
+</body>
+
+</html>

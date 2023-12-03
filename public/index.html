@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuntoPlay</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container" id="Newgrille">
+        <div id="grille">
+            <form action="/add" method="post">
+                <div class="input-container">
+                    Joueur 1  <input type="text" class="player-input" id="Player1" name="player1" required minlength="4"
+                        maxlength="8" size="15" />
+                </div>
+                <div class="input-container">
+                    Joueur 2  <input type="text" class="player-input" id="Player2" name="player2" required minlength="4"
+                        maxlength="8" size="15" />
+                </div>
+                <div class="input-container">
+                    <label for="databaseSelect">Choisir la base de données :</label>
+                    <select id="databaseSelect" class="database-dropdown" name="database">
+                        <option value="MySQL">MySQL</option>
+                        <option value="SQLite">SQLite</option>
+                        <option value="Mongodb">Mongodb</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="play-button">Play</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        Conversion de base de données 
+        <form action="/transi" method="post">
+            <div class="input-container">
+                <label for="databaseSwich1">Base à convertire </label>
+                <select id="databaseSwich1" class="database-dropdown" name="database1">
+                    <option value="MySQL">MySQL</option>
+                    <option value="SQLite">SQLite</option>
+                    <option value="Mongodb">Mongodb</option>
+                </select>
+            </div>
+            <div class="input-container">
+                <label for="databaseSwich2"> en </label>
+                <select id="databaseSwich2" class="database-dropdown" name="database2">
+                    <option value="MySQL">MySQL</option>
+                    <option value="SQLite">SQLite</option>
+                    <option value="Mongodb">Mongodb</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="play-button">Ok</button>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        Jeu de donnée alétoire  
+        <form action="/addrandom" method="post">
+            <div class="input-container">
+                <label for="databaseRandom">Base souhaité </label>
+                <select id="databaseRandom" class="database-dropdown" name="dataRandom">
+                    <option value="MySQL">MySQL</option>
+                    <option value="SQLite">SQLite</option>
+                    <option value="Mongodb">Mongodb</option>
+                </select>
+            </div>
+                <button type="submit" class="play-button">Ok</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

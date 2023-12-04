@@ -45,6 +45,7 @@ Make sure you have Node.js and npm installed on your machine.
     npm install sequelize@^6.35.0
     npm install sequelize-cli@^6.6.2
     npm install sqlite3@^5.1.6
+    npm install neo4j-driver@^5.15.0
     ```
 
 ### Database Setup

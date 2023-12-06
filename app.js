@@ -37,6 +37,76 @@ const PartieSchema = new Schema({
 
 const Partie = model('Partie', PartieSchema);
 
+const neo4j = require('neo4j-driver')
+
+const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('TestAdmin', 'azertyuiop'))
+
+
+/**
+ * The function creates a player node in a Neo4j database if it doesn't already exist.
+ * @param namePlayer1 - The parameter "namePlayer1" is the name of the player that you want to create
+ * in the database.
+ */
+async function createPlayer(namePlayer1) {
+  const session = driver.session()
+  var inBDD; 
+  var singleRecord;
+  try {
+    inBDD = await session.run(
+      'MATCH (n:Player {name: $name}) RETURN n',
+      { name: namePlayer1 }
+    )
+    singleRecord = inBDD.records[0]
+    if (singleRecord == undefined) {
+      result = await session.run(
+        'CREATE (a:Player {name: $name}) RETURN a',
+        { name: namePlayer1 }
+      )
+      console.log("Create New Player "  + namePlayer1)
+    } else {
+      console.log("Player it was created"  + namePlayer1)
+    }
+  } finally {
+    await session.close()
+  }
+}
+
+/**
+ * The function `createPartie` creates a new game session in a graph database, connects the players to
+ * the session, and records the winner of the session.
+ * @param namePlayer1 - The name of the first player in the game.
+ * @param namePlayer2 - The name of the second player in the game.
+ * @param whowin - The parameter "whowin" represents the name of the player who won the game.
+ */
+async function createPartie(namePlayer1,namePlayer2,whowin) {
+  const session = driver.session(); 
+  var result; 
+  var mydate = new Date();
+  const date = mydate.toISOString()
+  try {
+      result = await session.run(
+        'CREATE (a:Partie {date: $date}) RETURN a;',
+        { date: date }
+      )
+      result = await session.run(
+        'MATCH (b:Player { name: $namePlayer}),(a:Partie { date: $date}) CREATE (b)-[:PARTIEIN]->(a) RETURN b,a;',
+        { date: date, namePlayer: namePlayer2  }
+      )
+      
+      result = await session.run(
+        'MATCH (a:Partie {date: $date}),(b:Player { name: $namePlayer}) CREATE (b)-[:PARTIEIN]->(a) RETURN a,b',
+        { date: date, namePlayer: namePlayer1  }
+      )
+      result = await session.run(
+        'MATCH (a:Partie {date: $date}),(n:Player { name: $whowin}) CREATE (a)-[:WIN]->(n) RETURN a,n',
+        { date: date, whowin: whowin }
+      )
+    console.log("New Partie with " + date)
+  } finally {
+    await session.close()
+  }
+}
+
 // Choix de la BDD
 var whoBdd = "";
 //form data
@@ -182,6 +252,8 @@ app.post('/saveWinner', async (req, res) => {
     } catch (error) {
       console.error('Failed to update partie : ', error);
     }
+  } else if (whoBdd == 'noe4js') {
+
   }
 });
 
@@ -509,4 +581,51 @@ function shuffleArray(array) {
       [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+
+
+// Neo4j function 
+async function VisielSQLtoNeo(DBB1,res) {
+  try {
+    // Select SQL BDD
+    const partiesFromDBB1 = await DBB1.sequelize.query("SELECT * FROM parties", { type: QueryTypes.SELECT });
+    await Promise.all(partiesFromDBB1.map(async (partie) => {
+      createPlayer(partie.player1)
+      createPlayer(partie.player2)
+      createPartie(partie.player1,partie.player2,partie.whowin)
+    }));
+    await DBB1.sequelize.sync();
+   
+    var data  = 'Transition de base de données réussie.';
+    //console.log((await Partie.find()).toString())
+    res.render('resultSwitch', { data });
+    
+  } catch (error) {
+    console.error('Erreur lors de la transition de base de données:', error);
+  }
+}
+
+
+
+async function VisielNoSQLtoNeo(DBB2,res) {
+  try {
+    // Select NoSQL BDD 
+    const partiesFromMongo = await Partie.find();
+
+    // Delete SQL BDD
+  
+    // Add NoSQL to SQL
+    await Promise.all(partiesFromMongo.map(async (partieMongo) => {
+      createPlayer(partieMongo.Player1)
+      createPlayer(partieMongo.Player2)
+      createPartie(partieMongo.Player1,partieMongo.Player2,partieMongo.whowin)
+    }));
+    await DBB2.sequelize.sync();
+    
+    var data  = 'Transition de base de données réussie.';
+    res.render('resultSwitch', { data });
+  } catch (error) {
+    console.error('Erreur lors de la transition de base de données:', error);
+  }
 }

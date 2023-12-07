@@ -88,5 +88,20 @@
             </div>
         </form>
     </div>
+    <div class="container">
+        Efface la base de données  
+        <form action="/graphe" method="post">
+            <div class="input-container">
+                <label for="databaseRandom">Base souhaité </label>
+                <select id="databaseRandom" class="database-dropdown" name="datadel">
+                    <option value="MySQL">MySQL</option>
+                    <option value="SQLite">SQLite</option>
+                    <option value="Mongodb">Mongodb</option>
+                </select>
+            </div>
+                <button type="submit" class="play-button">Ok</button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

@@ -37,10 +37,13 @@ const PartieSchema = new Schema({
 
 const Partie = model('Partie', PartieSchema);
 
+/**
+ * The code defines two functions, `createPlayer` and `createPartie`, which create a player node and a
+ * game session node in a Neo4j database, respectively.
+ */
 const neo4j = require('neo4j-driver')
 
 const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('TestAdmin', 'azertyuiop'))
-
 
 /**
  * The function creates a player node in a Neo4j database if it doesn't already exist.
@@ -583,9 +586,28 @@ function shuffleArray(array) {
   return array;
 }
 
+app.post('/graphe', async (req, res) => {
+  const formData = req.body;
+  if ('MySQL' == formData.dataRandom  ) {
+    VisielSQLtoNeo(dbmysql,res)
+  } else if ('SQLite' == formData.dataRandom){
+    VisielSQLtoNeo(dbsqllite,res)
+  } else if ('Mongodb' == formData.dataRandom) {
+    VisielNoSQLtoNeo(res)
+  }
+});
 
 
 // Neo4j function 
+/**
+ * The function VisielSQLtoNeo retrieves data from a SQL database, creates players and parties in a
+ * Neo4j database based on the retrieved data, and sends a file as a response.
+ * @param DBB1 - DBB1 is an object representing a Sequelize database connection. It is used to execute
+ * SQL queries and interact with the database.
+ * @param res - The `res` parameter is the response object that is used to send the response back to
+ * the client. It is typically used to send files, JSON data, or HTML content back to the client. In
+ * this case, the `res` object is being used to send the `vueGraph.html`
+ */
 async function VisielSQLtoNeo(DBB1,res) {
   try {
     // Select SQL BDD
@@ -595,12 +617,7 @@ async function VisielSQLtoNeo(DBB1,res) {
       createPlayer(partie.player2)
       createPartie(partie.player1,partie.player2,partie.whowin)
     }));
-    await DBB1.sequelize.sync();
-   
-    var data  = 'Transition de base de données réussie.';
-    //console.log((await Partie.find()).toString())
-    res.render('resultSwitch', { data });
-    
+    res.sendFile(path.join(__dirname, '/public/vueGraph.html'));
   } catch (error) {
     console.error('Erreur lors de la transition de base de données:', error);
   }
@@ -608,23 +625,21 @@ async function VisielSQLtoNeo(DBB1,res) {
 
 
 
-async function VisielNoSQLtoNeo(DBB2,res) {
+/**
+ * The function VisielNoSQLtoNeo retrieves data from a NoSQL database, transforms it, and inserts it
+ * into a SQL database before sending a file.
+ */
+async function VisielNoSQLtoNeo(res) {
   try {
     // Select NoSQL BDD 
     const partiesFromMongo = await Partie.find();
-
-    // Delete SQL BDD
-  
     // Add NoSQL to SQL
     await Promise.all(partiesFromMongo.map(async (partieMongo) => {
       createPlayer(partieMongo.Player1)
       createPlayer(partieMongo.Player2)
       createPartie(partieMongo.Player1,partieMongo.Player2,partieMongo.whowin)
     }));
-    await DBB2.sequelize.sync();
-    
-    var data  = 'Transition de base de données réussie.';
-    res.render('resultSwitch', { data });
+    res.sendFile(path.join(__dirname, '/public/vueGraph.html'));
   } catch (error) {
     console.error('Erreur lors de la transition de base de données:', error);
   }

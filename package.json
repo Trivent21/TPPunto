@@ -18,6 +18,7 @@
     "mongoose": "^8.0.2",
     "mysql2": "^3.6.3",
     "neo4j-driver": "^5.15.0",
+    "neovis.js": "^2.1.0",
     "path": "^0.12.7",
     "sequelize": "^6.35.0",
     "sequelize-cli": "^6.6.2",

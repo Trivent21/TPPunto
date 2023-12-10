@@ -51,6 +51,7 @@ const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('TestAdmin', 'a
  * in the database.
  */
 async function createPlayer(namePlayer1) {
+  console.log("Test Create Player")
   const session = driver.session()
   var inBDD; 
   var singleRecord;
@@ -588,12 +589,32 @@ function shuffleArray(array) {
 
 app.post('/graphe', async (req, res) => {
   const formData = req.body;
-  if ('MySQL' == formData.dataRandom  ) {
+  if ('MySQL' == formData.visiel) {
     VisielSQLtoNeo(dbmysql,res)
-  } else if ('SQLite' == formData.dataRandom){
+  } else if ('SQLite' == formData.visiel){
     VisielSQLtoNeo(dbsqllite,res)
-  } else if ('Mongodb' == formData.dataRandom) {
+  } else if ('Mongodb' == formData.visiel) {
     VisielNoSQLtoNeo(res)
+  }
+});
+
+app.post('/deleteNeo', async (req, res) => {
+  const session = driver.session()
+  var inBDD; 
+  var singleRecord;
+  try {
+    inBDD = await session.run(
+      'match (n)-[l]-(m) delete l'
+    )
+    singleRecord = inBDD.records[0]
+    if (singleRecord == undefined) {
+      result = await session.run(
+        'match (n) delete n'
+      )
+    }
+  } finally {
+    await session.close()
+    res.sendFile(path.join(__dirname, '/public/vueGraph.html'));
   }
 });
 
@@ -617,13 +638,12 @@ async function VisielSQLtoNeo(DBB1,res) {
       createPlayer(partie.player2)
       createPartie(partie.player1,partie.player2,partie.whowin)
     }));
+    console.log("OK")
     res.sendFile(path.join(__dirname, '/public/vueGraph.html'));
   } catch (error) {
     console.error('Erreur lors de la transition de base de données:', error);
   }
 }
-
-
 
 /**
  * The function VisielNoSQLtoNeo retrieves data from a NoSQL database, transforms it, and inserts it

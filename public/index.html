@@ -89,19 +89,27 @@
         </form>
     </div>
     <div class="container">
-        Efface la base de données  
-        <form action="/graphe" method="post">
-            <div class="input-container">
-                <label for="databaseRandom">Base souhaité </label>
-                <select id="databaseRandom" class="database-dropdown" name="datadel">
-                    <option value="MySQL">MySQL</option>
-                    <option value="SQLite">SQLite</option>
-                    <option value="Mongodb">Mongodb</option>
-                </select>
-            </div>
-                <button type="submit" class="play-button">Ok</button>
-            </div>
-        </form>
+        Neo4J - Affichage de la base de donnée en graphe  
+        <div class="input-container">
+            <form action="/graphe" method="post">
+                <label for="databaseRandom">Base souhaité</label>
+                    <select id="databaseRandom" class="database-dropdown" name="visiel">
+                        <option value="MySQL">MySQL</option>
+                        <option value="SQLite">SQLite</option>
+                        <option value="Mongodb">Mongodb</option>
+                    </select>
+                    <div>
+                        <button type="submit" class="play-button">Ok</button>
+                    </div> 
+            </form>
+            <div>
+                Neo4J - Efface la bdd Neo4J
+            </div> 
+            <form action="/deleteNeo" method="post">
+                    <button type="submit" class="play-button">Ok</button>
+            </form>
+        </div>
     </div>
+   
 </body>
 </html>
